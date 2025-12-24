@@ -7,6 +7,14 @@ const checkJwt = require('./auth');
 
 app.use(express.json());
 
+// CRUD API routes
+app.use('/api/locations', require('./routes/location'));
+app.use('/api/offices', require('./routes/office'));
+app.use('/api/desks', require('./routes/desk'));
+app.use('/api/chairs', require('./routes/chair'));
+app.use('/api/users', require('./routes/user'));
+app.use('/api/reservations', require('./routes/reservation'));
+
 app.get('/', (req, res) => {
   res.send('OfficeSpaceManagement backend radi!');
 });
