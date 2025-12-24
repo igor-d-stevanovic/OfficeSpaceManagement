@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import { useAuth0 } from '@auth0/auth0-react';
 import Locations from './Locations';
+import Booking from './Booking';
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -20,6 +21,7 @@ function App() {
             <p>Prijavljen kao: {user?.email}</p>
             <button onClick={() => logout({ returnTo: window.location.origin })}>Log out</button>
             <Locations />
+            <Booking />
           </>
         )}
         <a
