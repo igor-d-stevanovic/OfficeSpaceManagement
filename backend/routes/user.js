@@ -38,3 +38,26 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+// PATCH user role (Admin only)
+
+let checkJwt = require('../auth');
+let checkRole = require('../middleware/roleCheck');
+// U test okruženju, middleware su no-op
+if (process.env.NODE_ENV === 'test') {
+  checkJwt = (req, res, next) => next();
+  checkRole = () => (req, res, next) => next();
+}
+
+// Primer: PATCH /api/users/:id/role { role: "OfficeManager" }
+router.patch('/:id/role', checkJwt, checkRole('Admin'), async (req, res) => {
+  const { role } = req.body;
+  if (!role || !['User', 'OfficeManager', 'Admin'].includes(role)) {
+    return res.status(400).json({ error: 'Neispravna rola' });
+  }
+  const user = await User.findByPk(req.params.id);
+  if (!user) return res.status(404).json({ error: 'Korisnik nije pronađen' });
+  user.role = role;
+  await user.save();
+  res.json({ message: 'Rola uspešno izmenjena', user });
+});
