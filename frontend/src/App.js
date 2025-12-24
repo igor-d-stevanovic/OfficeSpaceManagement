@@ -4,6 +4,7 @@ import './App.css';
 import { useAuth0 } from '@auth0/auth0-react';
 import Locations from './Locations';
 import Booking from './Booking';
+import ManagerPanel from './ManagerPanel';
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -22,6 +23,7 @@ function App() {
             <button onClick={() => logout({ returnTo: window.location.origin })}>Log out</button>
             <Locations />
             <Booking />
+            <ManagerPanel />
           </>
         )}
         <a
