@@ -5,6 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Locations from './Locations';
 import Booking from './Booking';
 import ManagerPanel from './ManagerPanel';
+import AdminPanel from './AdminPanel';
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -24,6 +25,7 @@ function App() {
             <Locations />
             <Booking />
             <ManagerPanel />
+            {user && user["https://officespace.example.com/roles"] === 'Admin' && <AdminPanel />}
           </>
         )}
         <a
