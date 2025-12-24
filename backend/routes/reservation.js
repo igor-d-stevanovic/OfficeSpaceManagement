@@ -27,16 +27,20 @@ router.post('/', async (req, res) => {
   res.status(201).json(reservation);
 });
 
-// UPDATE reservation
-router.put('/:id', async (req, res) => {
+
+const checkJwt = require('../auth');
+const checkRole = require('../middleware/roleCheck');
+
+// UPDATE reservation (samo OfficeManager ili Admin)
+router.put('/:id', checkJwt, checkRole(['OfficeManager', 'Admin']), async (req, res) => {
   const reservation = await Reservation.findByPk(req.params.id);
   if (!reservation) return res.status(404).json({ error: 'Not found' });
   await reservation.update(req.body);
   res.json(reservation);
 });
 
-// DELETE reservation
-router.delete('/:id', async (req, res) => {
+// DELETE reservation (samo OfficeManager ili Admin)
+router.delete('/:id', checkJwt, checkRole(['OfficeManager', 'Admin']), async (req, res) => {
   const reservation = await Reservation.findByPk(req.params.id);
   if (!reservation) return res.status(404).json({ error: 'Not found' });
   await reservation.destroy();
