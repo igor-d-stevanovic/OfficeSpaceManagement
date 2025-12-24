@@ -16,7 +16,13 @@ router.get('/:id', async (req, res) => {
 });
 
 // CREATE reservation
+// Rezerviši stolicu (validacija: nema duplih rezervacija za istu stolicu i datum)
 router.post('/', async (req, res) => {
+  const { date, ChairId } = req.body;
+  const existing = await Reservation.findOne({ where: { date, ChairId } });
+  if (existing) {
+    return res.status(409).json({ error: 'Stolica je već rezervisana za taj datum.' });
+  }
   const reservation = await Reservation.create(req.body);
   res.status(201).json(reservation);
 });
