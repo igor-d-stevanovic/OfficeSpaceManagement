@@ -1,6 +1,35 @@
 const express = require('express');
 const router = express.Router();
-const { Reservation } = require('../models/models');
+const { Reservation, Chair, Desk, Office, Location } = require('../models/models');
+// GET my reservations (za prijavljenog korisnika)
+let checkJwt = require('../auth');
+// U test okruženju, checkJwt je no-op
+if (process.env.NODE_ENV === 'test') {
+  checkJwt = (req, res, next) => next();
+}
+router.get('/my', checkJwt, async (req, res) => {
+  // Auth0 sub ili email se koristi za mapiranje na User.email
+  const userEmail = req.user && req.user.email;
+  if (!userEmail) return res.status(401).json({ error: 'Unauthorized' });
+  const user = await require('../models/models').User.findOne({ where: { email: userEmail } });
+  if (!user) return res.status(404).json({ error: 'Korisnik nije pronađen' });
+  const reservations = await Reservation.findAll({
+    where: { UserId: user.id },
+    include: [
+      {
+        model: Chair,
+        include: [{
+          model: Desk,
+          include: [{
+            model: Office,
+            include: [Location]
+          }]
+        }]
+      }
+    ]
+  });
+  res.json(reservations);
+});
 
 // GET all reservations
 router.get('/', async (req, res) => {
@@ -28,7 +57,6 @@ router.post('/', async (req, res) => {
 });
 
 
-const checkJwt = require('../auth');
 const checkRole = require('../middleware/roleCheck');
 
 // UPDATE reservation (samo OfficeManager ili Admin)

@@ -6,6 +6,7 @@ import Locations from './Locations';
 import Booking from './Booking';
 import ManagerPanel from './ManagerPanel';
 import AdminPanel from './AdminPanel';
+import MyReservations from './MyReservations';
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -25,6 +26,7 @@ function App() {
             <Locations />
             <Booking />
             <ManagerPanel />
+            <MyReservations />
             {user && user["https://officespace.example.com/roles"] === 'Admin' && <AdminPanel />}
           </>
         )}
