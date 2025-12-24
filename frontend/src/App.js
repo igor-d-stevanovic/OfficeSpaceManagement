@@ -1,7 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
 
+import { useAuth0 } from '@auth0/auth0-react';
+
 function App() {
+  const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
   return (
     <div className="App">
       <header className="App-header">
@@ -9,6 +12,14 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
+        {!isAuthenticated ? (
+          <button onClick={() => loginWithRedirect()}>Log in</button>
+        ) : (
+          <>
+            <p>Prijavljen kao: {user?.email}</p>
+            <button onClick={() => logout({ returnTo: window.location.origin })}>Log out</button>
+          </>
+        )}
         <a
           className="App-link"
           href="https://reactjs.org"
